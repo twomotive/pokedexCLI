@@ -1,0 +1,39 @@
+package commands
+
+import (
+	"github.com/twomotive/pokedex/internal/api"
+	"github.com/twomotive/pokedex/internal/config"
+)
+
+// Command represents a CLI command
+type Command struct {
+	Name        string
+	Description string
+	Callback    func(*config.AppConfig, *api.Client) error
+}
+
+// GetCommands returns all registered commands
+func GetCommands() map[string]Command {
+	return map[string]Command{
+		"help": {
+			Name:        "help",
+			Description: "Displays a help message",
+			Callback:    CommandHelp,
+		},
+		"exit": {
+			Name:        "exit",
+			Description: "Exit the Pokedex",
+			Callback:    CommandExit,
+		},
+		"map": {
+			Name:        "map",
+			Description: "Displays the names of 20 location areas in the Pokemon world",
+			Callback:    CommandMap,
+		},
+		"mapb": {
+			Name:        "mapb",
+			Description: "Displays previous 20 location areas in the Pokemon world",
+			Callback:    CommandMapBack,
+		},
+	}
+}
