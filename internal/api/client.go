@@ -5,12 +5,15 @@ import (
 	"fmt"
 	"net/http"
 	"time"
+
+	"github.com/twomotive/pokedex/internal/pokecache"
 )
 
 // Client handles API interactions
 type Client struct {
 	httpClient *http.Client
 	baseURL    string
+	cache      *pokecache.Cache
 }
 
 // NewClient creates a new API client
@@ -20,13 +23,25 @@ func NewClient() *Client {
 			Timeout: time.Second * 10,
 		},
 		baseURL: "https://pokeapi.co/api/v2",
+		cache:   pokecache.NewCache(5 * time.Minute),
 	}
 }
 
 // GetLocationAreas retrieves location areas with pagination
+// GetLocationAreas retrieves location areas with pagination
 func (c *Client) GetLocationAreas(url string) (*LocationAreasResponse, error) {
 	if url == "" {
 		url = c.baseURL + "/location-area"
+	}
+
+	// Check if result is in cache
+	if cachedData, found := c.cache.Get(url); found {
+		var result LocationAreasResponse
+		err := json.Unmarshal(cachedData, &result)
+		if err == nil {
+			return &result, nil
+		}
+		// If unmarshal fails, continue with the regular request
 	}
 
 	resp, err := c.httpClient.Get(url)
@@ -39,6 +54,12 @@ func (c *Client) GetLocationAreas(url string) (*LocationAreasResponse, error) {
 	err = json.NewDecoder(resp.Body).Decode(&result)
 	if err != nil {
 		return nil, fmt.Errorf("JSON decode error: %v", err)
+	}
+
+	// Cache the successful response
+	jsonData, err := json.Marshal(result)
+	if err == nil {
+		c.cache.Add(url, jsonData)
 	}
 
 	return &result, nil
