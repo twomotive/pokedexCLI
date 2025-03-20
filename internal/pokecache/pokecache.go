@@ -42,14 +42,14 @@ func (c *Cache) reapLoop() {
 		case <-ticker.C:
 			c.mutex.Lock()
 			for key, entry := range c.entries {
-				// Örnek: 5 dakikadan eski girdileri sil
+				// Delete entries older than the specified interval
 				if time.Since(entry.createdAt) > c.interval {
 					delete(c.entries, key)
 				}
 			}
 			c.mutex.Unlock()
 		case <-c.stop:
-			return // Temizliği durdur
+			return // Stop the cleaning
 		}
 	}
 }
