@@ -100,3 +100,40 @@ func (c *Client) GetPokemons(url string, area string) (*PokemonLocationArea, err
 
 	return &result, nil
 }
+
+func (c *Client) GetPokemonStats(url, name string) (*Pokemon, error) {
+	if url == "" {
+		url = c.baseURL + "/pokemon/" + name
+	}
+
+	// Check if result is in cache
+	if cachedData, found := c.cache.Get(url); found {
+		var result Pokemon
+		err := json.Unmarshal(cachedData, &result)
+		if err == nil {
+			return &result, nil
+		}
+		// If unmarshal fails, continue with the regular request
+	}
+
+	resp, err := c.httpClient.Get(url)
+	if err != nil {
+		return nil, fmt.Errorf("error making request: %v", err)
+	}
+	defer resp.Body.Close()
+
+	var result Pokemon
+	err = json.NewDecoder(resp.Body).Decode(&result)
+	if err != nil {
+		return nil, fmt.Errorf("JSON decode error: %v", err)
+	}
+
+	// Cache the successful response
+	jsonData, err := json.Marshal(result)
+	if err == nil {
+		c.cache.Add(url, jsonData)
+	}
+
+	return &result, nil
+
+}
