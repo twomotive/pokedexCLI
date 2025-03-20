@@ -19,3 +19,11 @@ type PaginationConfig struct {
 	Next     *string
 	Previous *string
 }
+
+type PokemonLocationArea struct {
+	PokemonEncounters []struct {
+		Pokemon struct {
+			Name string `json:"name"`
+		} `json:"pokemon"`
+	} `json:"pokemon_encounters"`
+}

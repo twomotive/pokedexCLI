@@ -8,7 +8,7 @@ import (
 )
 
 // Help displays available commands
-func CommandHelp(cfg *config.AppConfig, client *api.Client) error {
+func CommandHelp(cfg *config.AppConfig, client *api.Client, args []string) error {
 	fmt.Println()
 	fmt.Println("Welcome to the Pokedex!")
 	fmt.Println("Usage:")

@@ -8,7 +8,7 @@ import (
 )
 
 // Map displays location areas
-func CommandMap(cfg *config.AppConfig, client *api.Client) error {
+func CommandMap(cfg *config.AppConfig, client *api.Client, args []string) error {
 	url := ""
 	if cfg.Pagination.Next != nil {
 		url = *cfg.Pagination.Next

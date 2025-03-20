@@ -8,7 +8,7 @@ import (
 )
 
 // MapBack displays previous location areas
-func CommandMapBack(cfg *config.AppConfig, client *api.Client) error {
+func CommandMapBack(cfg *config.AppConfig, client *api.Client, args []string) error {
 	if cfg.Pagination.Previous == nil {
 		fmt.Println("No previous location areas.")
 		return nil

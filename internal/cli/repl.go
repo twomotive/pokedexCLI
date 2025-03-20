@@ -29,10 +29,14 @@ func StartREPL() {
 		}
 
 		commandName := words[0]
+		args := []string{}
+		if len(words) > 1 {
+			args = words[1:]
+		}
 		command, exists := commands.GetCommands()[commandName]
 
 		if exists {
-			err := command.Callback(appConfig, client)
+			err := command.Callback(appConfig, client, args)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
 			}

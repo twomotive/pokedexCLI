@@ -9,7 +9,7 @@ import (
 )
 
 // Exit exits the application
-func CommandExit(cfg *config.AppConfig, client *api.Client) error {
+func CommandExit(cfg *config.AppConfig, client *api.Client, args []string) error {
 	fmt.Println("Closing the Pokedex... Goodbye!")
 	os.Exit(0)
 	return nil
