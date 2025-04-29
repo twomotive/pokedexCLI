@@ -11,7 +11,6 @@ import (
 	"github.com/twomotive/pokedex/internal/config"
 )
 
-// StartREPL starts the interactive command line
 func StartREPL() {
 	reader := bufio.NewScanner(os.Stdin)
 	client := api.NewClient()
@@ -29,13 +28,14 @@ func StartREPL() {
 		}
 
 		commandName := words[0]
-		args := []string{}
-		if len(words) > 1 {
-			args = words[1:]
-		}
 		command, exists := commands.GetCommands()[commandName]
 
 		if exists {
+			// Pass the rest of the words as arguments to the command callback
+			args := []string{}
+			if len(words) > 1 {
+				args = words[1:]
+			}
 			err := command.Callback(appConfig, client, args)
 			if err != nil {
 				fmt.Printf("Error: %v\n", err)
